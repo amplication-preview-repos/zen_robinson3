@@ -10,7 +10,11 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, Dashboard as PrismaDashboard } from "@prisma/client";
+import {
+  Prisma,
+  Dashboard as PrismaDashboard,
+  BankAccount as PrismaBankAccount,
+} from "@prisma/client";
 
 export class DashboardServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -45,5 +49,13 @@ export class DashboardServiceBase {
     args: Prisma.SelectSubset<T, Prisma.DashboardDeleteArgs>
   ): Promise<PrismaDashboard> {
     return this.prisma.dashboard.delete(args);
+  }
+
+  async getBankAccount(parentId: string): Promise<PrismaBankAccount | null> {
+    return this.prisma.dashboard
+      .findUnique({
+        where: { id: parentId },
+      })
+      .bankAccount();
   }
 }

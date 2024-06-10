@@ -18,24 +18,40 @@ import { BankAccountService } from "../bankAccount.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  accountNumber: "exampleAccountNumber",
+  balance: 42.42,
+  bankName: "exampleBankName",
   createdAt: new Date(),
+  currency: "exampleCurrency",
   id: "exampleId",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
+  accountNumber: "exampleAccountNumber",
+  balance: 42.42,
+  bankName: "exampleBankName",
   createdAt: new Date(),
+  currency: "exampleCurrency",
   id: "exampleId",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
+    accountNumber: "exampleAccountNumber",
+    balance: 42.42,
+    bankName: "exampleBankName",
     createdAt: new Date(),
+    currency: "exampleCurrency",
     id: "exampleId",
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
+  accountNumber: "exampleAccountNumber",
+  balance: 42.42,
+  bankName: "exampleBankName",
   createdAt: new Date(),
+  currency: "exampleCurrency",
   id: "exampleId",
   updatedAt: new Date(),
 };

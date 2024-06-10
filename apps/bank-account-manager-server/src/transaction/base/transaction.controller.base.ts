@@ -31,10 +31,28 @@ export class TransactionControllerBase {
     @common.Body() data: TransactionCreateInput
   ): Promise<Transaction> {
     return await this.service.createTransaction({
-      data: data,
+      data: {
+        ...data,
+
+        bankAccount: data.bankAccount
+          ? {
+              connect: data.bankAccount,
+            }
+          : undefined,
+      },
       select: {
+        amount: true,
+
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        date: true,
         id: true,
+        typeField: true,
         updatedAt: true,
       },
     });
@@ -48,8 +66,18 @@ export class TransactionControllerBase {
     return this.service.transactions({
       ...args,
       select: {
+        amount: true,
+
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        date: true,
         id: true,
+        typeField: true,
         updatedAt: true,
       },
     });
@@ -64,8 +92,18 @@ export class TransactionControllerBase {
     const result = await this.service.transaction({
       where: params,
       select: {
+        amount: true,
+
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        date: true,
         id: true,
+        typeField: true,
         updatedAt: true,
       },
     });
@@ -87,10 +125,28 @@ export class TransactionControllerBase {
     try {
       return await this.service.updateTransaction({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          bankAccount: data.bankAccount
+            ? {
+                connect: data.bankAccount,
+              }
+            : undefined,
+        },
         select: {
+          amount: true,
+
+          bankAccount: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
+          date: true,
           id: true,
+          typeField: true,
           updatedAt: true,
         },
       });
@@ -114,8 +170,18 @@ export class TransactionControllerBase {
       return await this.service.deleteTransaction({
         where: params,
         select: {
+          amount: true,
+
+          bankAccount: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
+          date: true,
           id: true,
+          typeField: true,
           updatedAt: true,
         },
       });

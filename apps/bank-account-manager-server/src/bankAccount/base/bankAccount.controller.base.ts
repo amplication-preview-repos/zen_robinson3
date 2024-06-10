@@ -22,6 +22,15 @@ import { BankAccount } from "./BankAccount";
 import { BankAccountFindManyArgs } from "./BankAccountFindManyArgs";
 import { BankAccountWhereUniqueInput } from "./BankAccountWhereUniqueInput";
 import { BankAccountUpdateInput } from "./BankAccountUpdateInput";
+import { AnalyticsFindManyArgs } from "../../analytics/base/AnalyticsFindManyArgs";
+import { Analytics } from "../../analytics/base/Analytics";
+import { AnalyticsWhereUniqueInput } from "../../analytics/base/AnalyticsWhereUniqueInput";
+import { DashboardFindManyArgs } from "../../dashboard/base/DashboardFindManyArgs";
+import { Dashboard } from "../../dashboard/base/Dashboard";
+import { DashboardWhereUniqueInput } from "../../dashboard/base/DashboardWhereUniqueInput";
+import { TransactionFindManyArgs } from "../../transaction/base/TransactionFindManyArgs";
+import { Transaction } from "../../transaction/base/Transaction";
+import { TransactionWhereUniqueInput } from "../../transaction/base/TransactionWhereUniqueInput";
 
 export class BankAccountControllerBase {
   constructor(protected readonly service: BankAccountService) {}
@@ -33,7 +42,11 @@ export class BankAccountControllerBase {
     return await this.service.createBankAccount({
       data: data,
       select: {
+        accountNumber: true,
+        balance: true,
+        bankName: true,
         createdAt: true,
+        currency: true,
         id: true,
         updatedAt: true,
       },
@@ -48,7 +61,11 @@ export class BankAccountControllerBase {
     return this.service.bankAccounts({
       ...args,
       select: {
+        accountNumber: true,
+        balance: true,
+        bankName: true,
         createdAt: true,
+        currency: true,
         id: true,
         updatedAt: true,
       },
@@ -64,7 +81,11 @@ export class BankAccountControllerBase {
     const result = await this.service.bankAccount({
       where: params,
       select: {
+        accountNumber: true,
+        balance: true,
+        bankName: true,
         createdAt: true,
+        currency: true,
         id: true,
         updatedAt: true,
       },
@@ -89,7 +110,11 @@ export class BankAccountControllerBase {
         where: params,
         data: data,
         select: {
+          accountNumber: true,
+          balance: true,
+          bankName: true,
           createdAt: true,
+          currency: true,
           id: true,
           updatedAt: true,
         },
@@ -114,7 +139,11 @@ export class BankAccountControllerBase {
       return await this.service.deleteBankAccount({
         where: params,
         select: {
+          accountNumber: true,
+          balance: true,
+          bankName: true,
           createdAt: true,
+          currency: true,
           id: true,
           updatedAt: true,
         },
@@ -127,5 +156,253 @@ export class BankAccountControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.Get("/:id/analyticsItems")
+  @ApiNestedQuery(AnalyticsFindManyArgs)
+  async findAnalyticsItems(
+    @common.Req() request: Request,
+    @common.Param() params: BankAccountWhereUniqueInput
+  ): Promise<Analytics[]> {
+    const query = plainToClass(AnalyticsFindManyArgs, request.query);
+    const results = await this.service.findAnalyticsItems(params.id, {
+      ...query,
+      select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
+        createdAt: true,
+        id: true,
+        predictedExpense: true,
+        predictedIncome: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/analyticsItems")
+  async connectAnalyticsItems(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: AnalyticsWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      analyticsItems: {
+        connect: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/analyticsItems")
+  async updateAnalyticsItems(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: AnalyticsWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      analyticsItems: {
+        set: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/analyticsItems")
+  async disconnectAnalyticsItems(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: AnalyticsWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      analyticsItems: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Get("/:id/dashboards")
+  @ApiNestedQuery(DashboardFindManyArgs)
+  async findDashboards(
+    @common.Req() request: Request,
+    @common.Param() params: BankAccountWhereUniqueInput
+  ): Promise<Dashboard[]> {
+    const query = plainToClass(DashboardFindManyArgs, request.query);
+    const results = await this.service.findDashboards(params.id, {
+      ...query,
+      select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
+        createdAt: true,
+        id: true,
+        totalExpense: true,
+        totalIncome: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/dashboards")
+  async connectDashboards(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: DashboardWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      dashboards: {
+        connect: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/dashboards")
+  async updateDashboards(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: DashboardWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      dashboards: {
+        set: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/dashboards")
+  async disconnectDashboards(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: DashboardWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      dashboards: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Get("/:id/transactions")
+  @ApiNestedQuery(TransactionFindManyArgs)
+  async findTransactions(
+    @common.Req() request: Request,
+    @common.Param() params: BankAccountWhereUniqueInput
+  ): Promise<Transaction[]> {
+    const query = plainToClass(TransactionFindManyArgs, request.query);
+    const results = await this.service.findTransactions(params.id, {
+      ...query,
+      select: {
+        amount: true,
+
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
+        createdAt: true,
+        date: true,
+        id: true,
+        typeField: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/transactions")
+  async connectTransactions(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: TransactionWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      transactions: {
+        connect: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/transactions")
+  async updateTransactions(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: TransactionWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      transactions: {
+        set: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/transactions")
+  async disconnectTransactions(
+    @common.Param() params: BankAccountWhereUniqueInput,
+    @common.Body() body: TransactionWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      transactions: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateBankAccount({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

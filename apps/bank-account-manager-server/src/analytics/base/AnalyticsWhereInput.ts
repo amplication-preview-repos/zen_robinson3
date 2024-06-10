@@ -11,12 +11,26 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringFilter } from "../../util/StringFilter";
+import { BankAccountWhereUniqueInput } from "../../bankAccount/base/BankAccountWhereUniqueInput";
+import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { StringFilter } from "../../util/StringFilter";
+import { FloatNullableFilter } from "../../util/FloatNullableFilter";
 
 @InputType()
 class AnalyticsWhereInput {
+  @ApiProperty({
+    required: false,
+    type: () => BankAccountWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => BankAccountWhereUniqueInput)
+  @IsOptional()
+  @Field(() => BankAccountWhereUniqueInput, {
+    nullable: true,
+  })
+  bankAccount?: BankAccountWhereUniqueInput;
+
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -27,6 +41,28 @@ class AnalyticsWhereInput {
     nullable: true,
   })
   id?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: FloatNullableFilter,
+  })
+  @Type(() => FloatNullableFilter)
+  @IsOptional()
+  @Field(() => FloatNullableFilter, {
+    nullable: true,
+  })
+  predictedExpense?: FloatNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: FloatNullableFilter,
+  })
+  @Type(() => FloatNullableFilter)
+  @IsOptional()
+  @Field(() => FloatNullableFilter, {
+    nullable: true,
+  })
+  predictedIncome?: FloatNullableFilter;
 }
 
 export { AnalyticsWhereInput as AnalyticsWhereInput };

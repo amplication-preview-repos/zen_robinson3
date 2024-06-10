@@ -7,26 +7,50 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Transaction {
-  createdAt DateTime @default(now())
-  id        String   @id @default(cuid())
-  updatedAt DateTime @updatedAt
-}
-
 model BankAccount {
-  createdAt DateTime @default(now())
-  id        String   @id @default(cuid())
-  updatedAt DateTime @updatedAt
+  accountNumber  String?
+  analyticsItems Analytics[]
+  balance        Float?
+  bankName       String?
+  createdAt      DateTime      @default(now())
+  currency       String?
+  dashboards     Dashboard[]
+  id             String        @id @default(cuid())
+  transactions   Transaction[]
+  updatedAt      DateTime      @updatedAt
 }
 
-model Dashboard {
-  createdAt DateTime @default(now())
-  id        String   @id @default(cuid())
-  updatedAt DateTime @updatedAt
+model Transaction {
+  amount        Float?
+  bankAccount   BankAccount?              @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String?
+  createdAt     DateTime                  @default(now())
+  date          DateTime?
+  id            String                    @id @default(cuid())
+  typeField     EnumTransactionTypeField?
+  updatedAt     DateTime                  @updatedAt
 }
 
 model Analytics {
-  createdAt DateTime @default(now())
-  id        String   @id @default(cuid())
-  updatedAt DateTime @updatedAt
+  bankAccount      BankAccount? @relation(fields: [bankAccountId], references: [id])
+  bankAccountId    String?
+  createdAt        DateTime     @default(now())
+  id               String       @id @default(cuid())
+  predictedExpense Float?
+  predictedIncome  Float?
+  updatedAt        DateTime     @updatedAt
+}
+
+model Dashboard {
+  bankAccount   BankAccount? @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String?
+  createdAt     DateTime     @default(now())
+  id            String       @id @default(cuid())
+  totalExpense  Float?
+  totalIncome   Float?
+  updatedAt     DateTime     @updatedAt
+}
+
+enum EnumTransactionTypeField {
+  Option1
 }

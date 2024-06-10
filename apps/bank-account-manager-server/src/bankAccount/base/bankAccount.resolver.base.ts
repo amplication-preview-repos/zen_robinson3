@@ -17,7 +17,15 @@ import { BankAccount } from "./BankAccount";
 import { BankAccountCountArgs } from "./BankAccountCountArgs";
 import { BankAccountFindManyArgs } from "./BankAccountFindManyArgs";
 import { BankAccountFindUniqueArgs } from "./BankAccountFindUniqueArgs";
+import { CreateBankAccountArgs } from "./CreateBankAccountArgs";
+import { UpdateBankAccountArgs } from "./UpdateBankAccountArgs";
 import { DeleteBankAccountArgs } from "./DeleteBankAccountArgs";
+import { AnalyticsFindManyArgs } from "../../analytics/base/AnalyticsFindManyArgs";
+import { Analytics } from "../../analytics/base/Analytics";
+import { DashboardFindManyArgs } from "../../dashboard/base/DashboardFindManyArgs";
+import { Dashboard } from "../../dashboard/base/Dashboard";
+import { TransactionFindManyArgs } from "../../transaction/base/TransactionFindManyArgs";
+import { Transaction } from "../../transaction/base/Transaction";
 import { BankAccountService } from "../bankAccount.service";
 @graphql.Resolver(() => BankAccount)
 export class BankAccountResolverBase {
@@ -51,6 +59,35 @@ export class BankAccountResolverBase {
   }
 
   @graphql.Mutation(() => BankAccount)
+  async createBankAccount(
+    @graphql.Args() args: CreateBankAccountArgs
+  ): Promise<BankAccount> {
+    return await this.service.createBankAccount({
+      ...args,
+      data: args.data,
+    });
+  }
+
+  @graphql.Mutation(() => BankAccount)
+  async updateBankAccount(
+    @graphql.Args() args: UpdateBankAccountArgs
+  ): Promise<BankAccount | null> {
+    try {
+      return await this.service.updateBankAccount({
+        ...args,
+        data: args.data,
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => BankAccount)
   async deleteBankAccount(
     @graphql.Args() args: DeleteBankAccountArgs
   ): Promise<BankAccount | null> {
@@ -64,5 +101,47 @@ export class BankAccountResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Analytics], { name: "analyticsItems" })
+  async findAnalyticsItems(
+    @graphql.Parent() parent: BankAccount,
+    @graphql.Args() args: AnalyticsFindManyArgs
+  ): Promise<Analytics[]> {
+    const results = await this.service.findAnalyticsItems(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @graphql.ResolveField(() => [Dashboard], { name: "dashboards" })
+  async findDashboards(
+    @graphql.Parent() parent: BankAccount,
+    @graphql.Args() args: DashboardFindManyArgs
+  ): Promise<Dashboard[]> {
+    const results = await this.service.findDashboards(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @graphql.ResolveField(() => [Transaction], { name: "transactions" })
+  async findTransactions(
+    @graphql.Parent() parent: BankAccount,
+    @graphql.Args() args: TransactionFindManyArgs
+  ): Promise<Transaction[]> {
+    const results = await this.service.findTransactions(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

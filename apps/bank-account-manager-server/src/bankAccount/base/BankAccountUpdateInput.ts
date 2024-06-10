@@ -9,5 +9,100 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class BankAccountUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  IsString,
+  IsOptional,
+  ValidateNested,
+  IsNumber,
+} from "class-validator";
+import { AnalyticsUpdateManyWithoutBankAccountsInput } from "./AnalyticsUpdateManyWithoutBankAccountsInput";
+import { Type } from "class-transformer";
+import { DashboardUpdateManyWithoutBankAccountsInput } from "./DashboardUpdateManyWithoutBankAccountsInput";
+import { TransactionUpdateManyWithoutBankAccountsInput } from "./TransactionUpdateManyWithoutBankAccountsInput";
+
+@InputType()
+class BankAccountUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  accountNumber?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => AnalyticsUpdateManyWithoutBankAccountsInput,
+  })
+  @ValidateNested()
+  @Type(() => AnalyticsUpdateManyWithoutBankAccountsInput)
+  @IsOptional()
+  @Field(() => AnalyticsUpdateManyWithoutBankAccountsInput, {
+    nullable: true,
+  })
+  analyticsItems?: AnalyticsUpdateManyWithoutBankAccountsInput;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  balance?: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  bankName?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  currency?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => DashboardUpdateManyWithoutBankAccountsInput,
+  })
+  @ValidateNested()
+  @Type(() => DashboardUpdateManyWithoutBankAccountsInput)
+  @IsOptional()
+  @Field(() => DashboardUpdateManyWithoutBankAccountsInput, {
+    nullable: true,
+  })
+  dashboards?: DashboardUpdateManyWithoutBankAccountsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => TransactionUpdateManyWithoutBankAccountsInput,
+  })
+  @ValidateNested()
+  @Type(() => TransactionUpdateManyWithoutBankAccountsInput)
+  @IsOptional()
+  @Field(() => TransactionUpdateManyWithoutBankAccountsInput, {
+    nullable: true,
+  })
+  transactions?: TransactionUpdateManyWithoutBankAccountsInput;
+}
+
 export { BankAccountUpdateInput as BankAccountUpdateInput };

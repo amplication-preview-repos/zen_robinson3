@@ -31,10 +31,26 @@ export class DashboardControllerBase {
     @common.Body() data: DashboardCreateInput
   ): Promise<Dashboard> {
     return await this.service.createDashboard({
-      data: data,
+      data: {
+        ...data,
+
+        bankAccount: data.bankAccount
+          ? {
+              connect: data.bankAccount,
+            }
+          : undefined,
+      },
       select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        totalExpense: true,
+        totalIncome: true,
         updatedAt: true,
       },
     });
@@ -48,8 +64,16 @@ export class DashboardControllerBase {
     return this.service.dashboards({
       ...args,
       select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        totalExpense: true,
+        totalIncome: true,
         updatedAt: true,
       },
     });
@@ -64,8 +88,16 @@ export class DashboardControllerBase {
     const result = await this.service.dashboard({
       where: params,
       select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        totalExpense: true,
+        totalIncome: true,
         updatedAt: true,
       },
     });
@@ -87,10 +119,26 @@ export class DashboardControllerBase {
     try {
       return await this.service.updateDashboard({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          bankAccount: data.bankAccount
+            ? {
+                connect: data.bankAccount,
+              }
+            : undefined,
+        },
         select: {
+          bankAccount: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
           id: true,
+          totalExpense: true,
+          totalIncome: true,
           updatedAt: true,
         },
       });
@@ -114,8 +162,16 @@ export class DashboardControllerBase {
       return await this.service.deleteDashboard({
         where: params,
         select: {
+          bankAccount: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
           id: true,
+          totalExpense: true,
+          totalIncome: true,
           updatedAt: true,
         },
       });

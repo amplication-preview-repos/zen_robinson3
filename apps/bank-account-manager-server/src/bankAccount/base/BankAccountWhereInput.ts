@@ -11,12 +11,85 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringFilter } from "../../util/StringFilter";
+import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { IsOptional, ValidateNested } from "class-validator";
+import { AnalyticsListRelationFilter } from "../../analytics/base/AnalyticsListRelationFilter";
+import { FloatNullableFilter } from "../../util/FloatNullableFilter";
+import { DashboardListRelationFilter } from "../../dashboard/base/DashboardListRelationFilter";
+import { StringFilter } from "../../util/StringFilter";
+import { TransactionListRelationFilter } from "../../transaction/base/TransactionListRelationFilter";
 
 @InputType()
 class BankAccountWhereInput {
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  accountNumber?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => AnalyticsListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => AnalyticsListRelationFilter)
+  @IsOptional()
+  @Field(() => AnalyticsListRelationFilter, {
+    nullable: true,
+  })
+  analyticsItems?: AnalyticsListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: FloatNullableFilter,
+  })
+  @Type(() => FloatNullableFilter)
+  @IsOptional()
+  @Field(() => FloatNullableFilter, {
+    nullable: true,
+  })
+  balance?: FloatNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  bankName?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  currency?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => DashboardListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => DashboardListRelationFilter)
+  @IsOptional()
+  @Field(() => DashboardListRelationFilter, {
+    nullable: true,
+  })
+  dashboards?: DashboardListRelationFilter;
+
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -27,6 +100,18 @@ class BankAccountWhereInput {
     nullable: true,
   })
   id?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => TransactionListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => TransactionListRelationFilter)
+  @IsOptional()
+  @Field(() => TransactionListRelationFilter, {
+    nullable: true,
+  })
+  transactions?: TransactionListRelationFilter;
 }
 
 export { BankAccountWhereInput as BankAccountWhereInput };

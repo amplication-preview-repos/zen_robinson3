@@ -9,5 +9,47 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class DashboardUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { BankAccountWhereUniqueInput } from "../../bankAccount/base/BankAccountWhereUniqueInput";
+import { ValidateNested, IsOptional, IsNumber } from "class-validator";
+import { Type } from "class-transformer";
+
+@InputType()
+class DashboardUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => BankAccountWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => BankAccountWhereUniqueInput)
+  @IsOptional()
+  @Field(() => BankAccountWhereUniqueInput, {
+    nullable: true,
+  })
+  bankAccount?: BankAccountWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  totalExpense?: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  totalIncome?: number | null;
+}
+
 export { DashboardUpdateInput as DashboardUpdateInput };

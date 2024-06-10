@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { TransactionModule } from "./transaction/transaction.module";
 import { BankAccountModule } from "./bankAccount/bankAccount.module";
-import { DashboardModule } from "./dashboard/dashboard.module";
+import { TransactionModule } from "./transaction/transaction.module";
 import { AnalyticsModule } from "./analytics/analytics.module";
+import { DashboardModule } from "./dashboard/dashboard.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -15,10 +15,10 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 @Module({
   controllers: [],
   imports: [
-    TransactionModule,
     BankAccountModule,
-    DashboardModule,
+    TransactionModule,
     AnalyticsModule,
+    DashboardModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,

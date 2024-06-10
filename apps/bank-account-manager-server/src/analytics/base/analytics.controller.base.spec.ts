@@ -20,23 +20,31 @@ const existingId = "existingId";
 const CREATE_INPUT = {
   createdAt: new Date(),
   id: "exampleId",
+  predictedExpense: 42.42,
+  predictedIncome: 42.42,
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
   createdAt: new Date(),
   id: "exampleId",
+  predictedExpense: 42.42,
+  predictedIncome: 42.42,
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
     createdAt: new Date(),
     id: "exampleId",
+    predictedExpense: 42.42,
+    predictedIncome: 42.42,
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
   createdAt: new Date(),
   id: "exampleId",
+  predictedExpense: 42.42,
+  predictedIncome: 42.42,
   updatedAt: new Date(),
 };
 

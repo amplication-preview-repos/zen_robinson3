@@ -11,11 +11,27 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import { BankAccount } from "../../bankAccount/base/BankAccount";
+import {
+  ValidateNested,
+  IsOptional,
+  IsDate,
+  IsString,
+  IsNumber,
+} from "class-validator";
 import { Type } from "class-transformer";
 
 @ObjectType()
 class Dashboard {
+  @ApiProperty({
+    required: false,
+    type: () => BankAccount,
+  })
+  @ValidateNested()
+  @Type(() => BankAccount)
+  @IsOptional()
+  bankAccount?: BankAccount | null;
+
   @ApiProperty({
     required: true,
   })
@@ -31,6 +47,28 @@ class Dashboard {
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  totalExpense!: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  totalIncome!: number | null;
 
   @ApiProperty({
     required: true,

@@ -31,10 +31,26 @@ export class AnalyticsControllerBase {
     @common.Body() data: AnalyticsCreateInput
   ): Promise<Analytics> {
     return await this.service.createAnalytics({
-      data: data,
+      data: {
+        ...data,
+
+        bankAccount: data.bankAccount
+          ? {
+              connect: data.bankAccount,
+            }
+          : undefined,
+      },
       select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        predictedExpense: true,
+        predictedIncome: true,
         updatedAt: true,
       },
     });
@@ -48,8 +64,16 @@ export class AnalyticsControllerBase {
     return this.service.analyticsItems({
       ...args,
       select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        predictedExpense: true,
+        predictedIncome: true,
         updatedAt: true,
       },
     });
@@ -64,8 +88,16 @@ export class AnalyticsControllerBase {
     const result = await this.service.analytics({
       where: params,
       select: {
+        bankAccount: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        predictedExpense: true,
+        predictedIncome: true,
         updatedAt: true,
       },
     });
@@ -87,10 +119,26 @@ export class AnalyticsControllerBase {
     try {
       return await this.service.updateAnalytics({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          bankAccount: data.bankAccount
+            ? {
+                connect: data.bankAccount,
+              }
+            : undefined,
+        },
         select: {
+          bankAccount: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
           id: true,
+          predictedExpense: true,
+          predictedIncome: true,
           updatedAt: true,
         },
       });
@@ -114,8 +162,16 @@ export class AnalyticsControllerBase {
       return await this.service.deleteAnalytics({
         where: params,
         select: {
+          bankAccount: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
           id: true,
+          predictedExpense: true,
+          predictedIncome: true,
           updatedAt: true,
         },
       });

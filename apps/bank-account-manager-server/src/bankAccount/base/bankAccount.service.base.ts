@@ -10,7 +10,14 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, BankAccount as PrismaBankAccount } from "@prisma/client";
+
+import {
+  Prisma,
+  BankAccount as PrismaBankAccount,
+  Analytics as PrismaAnalytics,
+  Dashboard as PrismaDashboard,
+  Transaction as PrismaTransaction,
+} from "@prisma/client";
 
 export class BankAccountServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -47,5 +54,38 @@ export class BankAccountServiceBase {
     args: Prisma.SelectSubset<T, Prisma.BankAccountDeleteArgs>
   ): Promise<PrismaBankAccount> {
     return this.prisma.bankAccount.delete(args);
+  }
+
+  async findAnalyticsItems(
+    parentId: string,
+    args: Prisma.AnalyticsFindManyArgs
+  ): Promise<PrismaAnalytics[]> {
+    return this.prisma.bankAccount
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .analyticsItems(args);
+  }
+
+  async findDashboards(
+    parentId: string,
+    args: Prisma.DashboardFindManyArgs
+  ): Promise<PrismaDashboard[]> {
+    return this.prisma.bankAccount
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .dashboards(args);
+  }
+
+  async findTransactions(
+    parentId: string,
+    args: Prisma.TransactionFindManyArgs
+  ): Promise<PrismaTransaction[]> {
+    return this.prisma.bankAccount
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .transactions(args);
   }
 }

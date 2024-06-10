@@ -17,7 +17,10 @@ import { Analytics } from "./Analytics";
 import { AnalyticsCountArgs } from "./AnalyticsCountArgs";
 import { AnalyticsFindManyArgs } from "./AnalyticsFindManyArgs";
 import { AnalyticsFindUniqueArgs } from "./AnalyticsFindUniqueArgs";
+import { CreateAnalyticsArgs } from "./CreateAnalyticsArgs";
+import { UpdateAnalyticsArgs } from "./UpdateAnalyticsArgs";
 import { DeleteAnalyticsArgs } from "./DeleteAnalyticsArgs";
+import { BankAccount } from "../../bankAccount/base/BankAccount";
 import { AnalyticsService } from "../analytics.service";
 @graphql.Resolver(() => Analytics)
 export class AnalyticsResolverBase {
@@ -51,6 +54,51 @@ export class AnalyticsResolverBase {
   }
 
   @graphql.Mutation(() => Analytics)
+  async createAnalytics(
+    @graphql.Args() args: CreateAnalyticsArgs
+  ): Promise<Analytics> {
+    return await this.service.createAnalytics({
+      ...args,
+      data: {
+        ...args.data,
+
+        bankAccount: args.data.bankAccount
+          ? {
+              connect: args.data.bankAccount,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @graphql.Mutation(() => Analytics)
+  async updateAnalytics(
+    @graphql.Args() args: UpdateAnalyticsArgs
+  ): Promise<Analytics | null> {
+    try {
+      return await this.service.updateAnalytics({
+        ...args,
+        data: {
+          ...args.data,
+
+          bankAccount: args.data.bankAccount
+            ? {
+                connect: args.data.bankAccount,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Analytics)
   async deleteAnalytics(
     @graphql.Args() args: DeleteAnalyticsArgs
   ): Promise<Analytics | null> {
@@ -64,5 +112,20 @@ export class AnalyticsResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => BankAccount, {
+    nullable: true,
+    name: "bankAccount",
+  })
+  async getBankAccount(
+    @graphql.Parent() parent: Analytics
+  ): Promise<BankAccount | null> {
+    const result = await this.service.getBankAccount(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

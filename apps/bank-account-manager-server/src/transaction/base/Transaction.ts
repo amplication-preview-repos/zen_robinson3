@@ -11,11 +11,40 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import {
+  IsNumber,
+  IsOptional,
+  ValidateNested,
+  IsDate,
+  IsString,
+  IsEnum,
+} from "class-validator";
+import { BankAccount } from "../../bankAccount/base/BankAccount";
 import { Type } from "class-transformer";
+import { EnumTransactionTypeField } from "./EnumTransactionTypeField";
 
 @ObjectType()
 class Transaction {
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  amount!: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => BankAccount,
+  })
+  @ValidateNested()
+  @Type(() => BankAccount)
+  @IsOptional()
+  bankAccount?: BankAccount | null;
+
   @ApiProperty({
     required: true,
   })
@@ -25,12 +54,34 @@ class Transaction {
   createdAt!: Date;
 
   @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  date!: Date | null;
+
+  @ApiProperty({
     required: true,
     type: String,
   })
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumTransactionTypeField,
+  })
+  @IsEnum(EnumTransactionTypeField)
+  @IsOptional()
+  @Field(() => EnumTransactionTypeField, {
+    nullable: true,
+  })
+  typeField?: "Option1" | null;
 
   @ApiProperty({
     required: true,

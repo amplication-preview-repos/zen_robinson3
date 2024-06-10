@@ -17,7 +17,10 @@ import { Dashboard } from "./Dashboard";
 import { DashboardCountArgs } from "./DashboardCountArgs";
 import { DashboardFindManyArgs } from "./DashboardFindManyArgs";
 import { DashboardFindUniqueArgs } from "./DashboardFindUniqueArgs";
+import { CreateDashboardArgs } from "./CreateDashboardArgs";
+import { UpdateDashboardArgs } from "./UpdateDashboardArgs";
 import { DeleteDashboardArgs } from "./DeleteDashboardArgs";
+import { BankAccount } from "../../bankAccount/base/BankAccount";
 import { DashboardService } from "../dashboard.service";
 @graphql.Resolver(() => Dashboard)
 export class DashboardResolverBase {
@@ -51,6 +54,51 @@ export class DashboardResolverBase {
   }
 
   @graphql.Mutation(() => Dashboard)
+  async createDashboard(
+    @graphql.Args() args: CreateDashboardArgs
+  ): Promise<Dashboard> {
+    return await this.service.createDashboard({
+      ...args,
+      data: {
+        ...args.data,
+
+        bankAccount: args.data.bankAccount
+          ? {
+              connect: args.data.bankAccount,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @graphql.Mutation(() => Dashboard)
+  async updateDashboard(
+    @graphql.Args() args: UpdateDashboardArgs
+  ): Promise<Dashboard | null> {
+    try {
+      return await this.service.updateDashboard({
+        ...args,
+        data: {
+          ...args.data,
+
+          bankAccount: args.data.bankAccount
+            ? {
+                connect: args.data.bankAccount,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Dashboard)
   async deleteDashboard(
     @graphql.Args() args: DeleteDashboardArgs
   ): Promise<Dashboard | null> {
@@ -64,5 +112,20 @@ export class DashboardResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => BankAccount, {
+    nullable: true,
+    name: "bankAccount",
+  })
+  async getBankAccount(
+    @graphql.Parent() parent: Dashboard
+  ): Promise<BankAccount | null> {
+    const result = await this.service.getBankAccount(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

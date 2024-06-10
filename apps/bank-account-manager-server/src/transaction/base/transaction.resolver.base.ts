@@ -17,7 +17,10 @@ import { Transaction } from "./Transaction";
 import { TransactionCountArgs } from "./TransactionCountArgs";
 import { TransactionFindManyArgs } from "./TransactionFindManyArgs";
 import { TransactionFindUniqueArgs } from "./TransactionFindUniqueArgs";
+import { CreateTransactionArgs } from "./CreateTransactionArgs";
+import { UpdateTransactionArgs } from "./UpdateTransactionArgs";
 import { DeleteTransactionArgs } from "./DeleteTransactionArgs";
+import { BankAccount } from "../../bankAccount/base/BankAccount";
 import { TransactionService } from "../transaction.service";
 @graphql.Resolver(() => Transaction)
 export class TransactionResolverBase {
@@ -51,6 +54,51 @@ export class TransactionResolverBase {
   }
 
   @graphql.Mutation(() => Transaction)
+  async createTransaction(
+    @graphql.Args() args: CreateTransactionArgs
+  ): Promise<Transaction> {
+    return await this.service.createTransaction({
+      ...args,
+      data: {
+        ...args.data,
+
+        bankAccount: args.data.bankAccount
+          ? {
+              connect: args.data.bankAccount,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @graphql.Mutation(() => Transaction)
+  async updateTransaction(
+    @graphql.Args() args: UpdateTransactionArgs
+  ): Promise<Transaction | null> {
+    try {
+      return await this.service.updateTransaction({
+        ...args,
+        data: {
+          ...args.data,
+
+          bankAccount: args.data.bankAccount
+            ? {
+                connect: args.data.bankAccount,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Transaction)
   async deleteTransaction(
     @graphql.Args() args: DeleteTransactionArgs
   ): Promise<Transaction | null> {
@@ -64,5 +112,20 @@ export class TransactionResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => BankAccount, {
+    nullable: true,
+    name: "bankAccount",
+  })
+  async getBankAccount(
+    @graphql.Parent() parent: Transaction
+  ): Promise<BankAccount | null> {
+    const result = await this.service.getBankAccount(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

@@ -11,11 +11,62 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import {
+  IsString,
+  IsOptional,
+  ValidateNested,
+  IsNumber,
+  IsDate,
+} from "class-validator";
+import { Analytics } from "../../analytics/base/Analytics";
 import { Type } from "class-transformer";
+import { Dashboard } from "../../dashboard/base/Dashboard";
+import { Transaction } from "../../transaction/base/Transaction";
 
 @ObjectType()
 class BankAccount {
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  accountNumber!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Analytics],
+  })
+  @ValidateNested()
+  @Type(() => Analytics)
+  @IsOptional()
+  analyticsItems?: Array<Analytics>;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  balance!: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  bankName!: string | null;
+
   @ApiProperty({
     required: true,
   })
@@ -25,12 +76,41 @@ class BankAccount {
   createdAt!: Date;
 
   @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  currency!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Dashboard],
+  })
+  @ValidateNested()
+  @Type(() => Dashboard)
+  @IsOptional()
+  dashboards?: Array<Dashboard>;
+
+  @ApiProperty({
     required: true,
     type: String,
   })
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Transaction],
+  })
+  @ValidateNested()
+  @Type(() => Transaction)
+  @IsOptional()
+  transactions?: Array<Transaction>;
 
   @ApiProperty({
     required: true,
